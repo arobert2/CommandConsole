@@ -21,31 +21,37 @@ namespace CommandConsole
     /// </summary>
     public partial class MainWindow : Window
     {
-        ConsoleBuffer buff = new ConsoleBuffer();
+        ConsoleBuffer Buffer = new ConsoleBuffer();
         string InputToken => ">> ";
+
+        int MinimumCaretPosition => InputToken.Length;
+        int CaretPosition => ConsoleInput.CaretIndex;
+
+        public Action TaskSystem;
 
         public MainWindow()
         {
             InitializeComponent();
-            buff.BufferUpdated = WriteBuffer;
+            Buffer.BufferUpdated = WriteBuffer;
 
             //setup ConsoleInput textbox.
             ConsoleInput.Text = InputToken;
             ConsoleInput.CaretBrush = new SolidColorBrush(Colors.Black);
+            ConsoleInput.CaretIndex = MinimumCaretPosition;
 
             //focus ConsoleInput and stay there
             ConsoleInput.Focus();
             ConsoleInput.LostKeyboardFocus += (object o, KeyboardFocusChangedEventArgs e) => ConsoleInput.Focus();
 
             //Launch text
-            buff.Write("COMMAND CONSOLE\n\nCreator: Allen Roberts\nemail: allen.roberts1985@gmail.com\ngit: github.com/arobert2");
+            Buffer.Write("COMMAND CONSOLE\n\nCreator: Allen Roberts\nemail: allen.roberts1985@gmail.com\ngit: github.com/arobert2");
         }
 
         public void WriteBuffer()
         {
             TextRange tr = new TextRange(ConsoleOutput.Document.ContentEnd, ConsoleOutput.Document.ContentEnd);
-            tr.Text = buff.OutputBuffer[buff.OutputBuffer.Count - 1].Text + "\n";
-            tr.ApplyPropertyValue(TextElement.ForegroundProperty, buff.OutputBuffer[buff.OutputBuffer.Count - 1].DisplayColor);
+            tr.Text = Buffer.OutputBuffer[Buffer.OutputBuffer.Count - 1].Text + "\n";
+            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Buffer.OutputBuffer[Buffer.OutputBuffer.Count - 1].DisplayColor);
         }
 
         public void CommandInputed()
@@ -55,17 +61,23 @@ namespace CommandConsole
 
         public void OnEnter()
         {
-            string CommandString = ConsoleInput.Text.Substring(3).ToLower();
+            string CommandString = ConsoleInput.Text.Substring(MinimumCaretPosition).ToLower();
         }
 
-        public class CBuffer
+        public void event_KeyPressed(object sender, KeyEventArgs e)
         {
-            public static ConsoleBuffer Instance { get; set; }
+            if (CaretPosition <= MinimumCaretPosition)
+                if(e.Key == Key.Left || e.Key == Key.Back)
+                    e.Handled = true;
 
-            public CBuffer()
-            {
-                Instance = Instance == null ? new ConsoleBuffer() : Instance;
-            }
+            if (e.Key == Key.Enter)
+                OnEnter();
+        }
+
+        private void ConsoleInput_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (CaretPosition < MinimumCaretPosition)
+                ConsoleInput.CaretIndex = MinimumCaretPosition;
         }
     }
 }
