@@ -37,14 +37,14 @@ namespace CommandConsole
         public CommandLibrary()
         {
             Library = new Dictionary<string, ICommand>();
-            ICommand c = new ListCommands();
-            Library.Add(c.Keyword, c);
-            c = new Helpc();
-            Library.Add(c.Keyword, c);
-            c = new Exit();
-            Library.Add(c.Keyword, c);
-        }
+            List<ICommand> c = new List<ICommand>();
+            c.Add(new Helpc());
+            c.Add(new ListCommands());
+            c.Add(new Exit());
 
+            foreach (ICommand com in c)
+                Library.Add(com.Keyword, com);
+        }
         /// <summary>
         /// List all commands available. Command formated to add to CommandLibrary.
         /// </summary>
@@ -122,12 +122,8 @@ namespace CommandConsole
             public CommandType Type => CommandType.Command;
             public void Execute(object sender, string c)
             {
-                if(sender.GetType() == typeof(MainWindow))
-                    Application.Current.Shutdown();
-
-                if (((ICommand)sender).Type == CommandType.App)
-                    ((IApp)sender).Cancel();
-
+                Application.Current.Shutdown();
+                return;
             }
         }
     }
@@ -175,8 +171,10 @@ namespace CommandConsole
         /// <summary>
         /// Current status.
         /// </summary>
-        string Status {get;}
+        string Status { get; }
     }
-
+    /// <summary>
+    /// defines whether a command runs in the current thread or a seperate thread.
+    /// </summary>
     public enum CommandType { Command, App };
 }
