@@ -59,6 +59,10 @@ namespace CommandConsole
             /// </summary>
             public string Keyword => "listcommands";
             /// <summary>
+            /// Command type. (Command or App. Apps run on their own thread.)
+            /// </summary>
+            public CommandType Type => CommandType.Command;
+            /// <summary>
             /// Method that will be executed.
             /// </summary>
             /// <param name="o">generic parameter</param>
@@ -69,7 +73,10 @@ namespace CommandConsole
                 CommandLibrary lib = main.CurrentLibrary;
                 foreach(ICommand c in lib.Library.Values)
                 {
-                    buffer.Write(c.Keyword);
+                    string gap = "                                          ";
+                    gap = gap.Substring(c.Keyword.Length);
+                    System.Diagnostics.Debug.WriteLine(gap.Length);
+                    buffer.Write(c.Keyword + gap + c.Type.ToString());
                 }
             }
         }
@@ -86,6 +93,10 @@ namespace CommandConsole
             /// keyword used for call
             /// </summary>
             public string Keyword => "help";
+            /// <summary>
+            /// Type of command (Command or App. Apps run on their own threads.);
+            /// </summary>
+            public CommandType Type => CommandType.Command;
             /// <summary>
             /// Method that will be executed
             /// </summary>
@@ -108,9 +119,15 @@ namespace CommandConsole
         {
             public string Help => "Exit Command Console";
             public string Keyword => "exit";
+            public CommandType Type => CommandType.Command;
             public void Execute(object sender, string c)
             {
-                Application.Current.Shutdown();
+                if(sender.GetType() == typeof(MainWindow))
+                    Application.Current.Shutdown();
+
+                if (((ICommand)sender).Type == CommandType.App)
+                    ((IApp)sender).Cancel();
+
             }
         }
     }
@@ -133,6 +150,10 @@ namespace CommandConsole
         /// <param name="Param">Parameters</param>
         /// <param name="input">complete input string</param>
         void Execute(object Param, string input);
+        /// <summary>
+        /// Type of command.
+        /// </summary>
+        CommandType Type { get; }
     }
     /// <summary>
     /// Application template for apps that run in their own thread.
@@ -151,5 +172,11 @@ namespace CommandConsole
         /// Log location.
         /// </summary>
         void Log();
+        /// <summary>
+        /// Current status.
+        /// </summary>
+        string Status {get;}
     }
+
+    public enum CommandType { Command, App };
 }
