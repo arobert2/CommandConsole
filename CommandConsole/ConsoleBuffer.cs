@@ -12,7 +12,9 @@ namespace CommandConsole
         /// <summary>
         /// Update console delegate
         /// </summary>
-        public Action BufferUpdated;
+        public static Action _bufferupdated;
+
+        public Action BufferUpdated { get { return _bufferupdated; } set { _bufferupdated = value; } }
         /// <summary>
         /// Output buffer
         /// </summary>

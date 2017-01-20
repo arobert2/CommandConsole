@@ -27,7 +27,7 @@ namespace CommandConsole
         int MinimumCaretPosition => InputToken.Length;
         int CaretPosition => ConsoleInput.CaretIndex;
 
-        public Action TaskSystem;
+        TopLevelLibrary lib = new TopLevelLibrary();
 
         public MainWindow()
         {
@@ -41,10 +41,10 @@ namespace CommandConsole
 
             //focus ConsoleInput and stay there
             ConsoleInput.Focus();
-            ConsoleInput.LostKeyboardFocus += (object o, KeyboardFocusChangedEventArgs e) => ConsoleInput.Focus();
+            ConsoleOutput.Focusable = false;
 
             //Launch text
-            Buffer.Write("COMMAND CONSOLE\n\nCreator: Allen Roberts\nemail: allen.roberts1985@gmail.com\ngit: github.com/arobert2");
+            Buffer.Write("COMMAND CONSOLE\n\nCreator: Allen Roberts\nemail: allen.roberts1985@gmail.com\ngit: github.com/arobert2\n");
         }
 
         public void WriteBuffer()
@@ -62,6 +62,9 @@ namespace CommandConsole
         public void OnEnter()
         {
             string CommandString = ConsoleInput.Text.Substring(MinimumCaretPosition).ToLower();
+            TopLevelLibrary.Instance.Library[CommandString.Split()[0]].Execute(TopLevelLibrary.Instance, CommandString);
+            ConsoleInput.Text = InputToken;
+            ResetCaret();
         }
 
         public void event_KeyPressed(object sender, KeyEventArgs e)
@@ -76,8 +79,13 @@ namespace CommandConsole
 
         private void ConsoleInput_Click(object sender, MouseButtonEventArgs e)
         {
-            if (CaretPosition < MinimumCaretPosition)
+            if (CaretPosition <= MinimumCaretPosition)
                 ConsoleInput.CaretIndex = MinimumCaretPosition;
+        }
+
+        private void ResetCaret()
+        {
+            ConsoleInput.CaretIndex = MinimumCaretPosition;
         }
     }
 }

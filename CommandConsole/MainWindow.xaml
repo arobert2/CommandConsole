@@ -16,7 +16,7 @@
                 </Style>
             </RichTextBox.Resources>
         </RichTextBox>
-        <TextBox Name="ConsoleInput" Margin="0,282,0,0" Background="Gray" Foreground="Black" MaxLines="1" TextWrapping="NoWrap" FontWeight="Bold" PreviewKeyDown="event_KeyPressed" MouseLeftButtonUp="ConsoleInput_Click">
+        <TextBox Name="ConsoleInput" Margin="0,282,0,0" Background="Gray" Foreground="Black" MaxLines="1" TextWrapping="NoWrap" FontWeight="Bold" PreviewKeyDown="event_KeyPressed" PreviewMouseLeftButtonUp="ConsoleInput_Click">
         </TextBox>
     </Grid>
 </Window>
