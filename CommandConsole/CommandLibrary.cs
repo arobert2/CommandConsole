@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CommandConsole
 {
@@ -40,6 +41,8 @@ namespace CommandConsole
             Library.Add(c.Keyword, c);
             c = new Helpc();
             Library.Add(c.Keyword, c);
+            c = new Exit();
+            Library.Add(c.Keyword, c);
         }
 
         /// <summary>
@@ -62,7 +65,8 @@ namespace CommandConsole
             public void Execute(object o, string s)
             {
                 ConsoleBuffer buffer = new ConsoleBuffer();
-                CommandLibrary lib = (CommandLibrary)o;
+                MainWindow main = (MainWindow)o;
+                CommandLibrary lib = main.CurrentLibrary;
                 foreach(ICommand c in lib.Library.Values)
                 {
                     buffer.Write(c.Keyword);
@@ -89,8 +93,24 @@ namespace CommandConsole
             public void Execute(object o, string c)
             {
                 ConsoleBuffer buffer = new ConsoleBuffer();
-                CommandLibrary lib = (CommandLibrary)o;
+                if (c.Split().Length < 2)
+                {
+                    buffer.Error("Not enough parameters.");
+                    return;
+                }
+                MainWindow main = (MainWindow)o;
+                CommandLibrary lib = main.CurrentLibrary;
                 buffer.Help(lib.Library[c.Split()[1]].Help);
+            }
+        }
+
+        public class Exit : ICommand
+        {
+            public string Help => "Exit Command Console";
+            public string Keyword => "exit";
+            public void Execute(object sender, string c)
+            {
+                Application.Current.Shutdown();
             }
         }
     }
