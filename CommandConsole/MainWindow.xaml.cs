@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace CommandConsole
 {
@@ -24,7 +25,7 @@ namespace CommandConsole
         /// <summary>
         /// Output buffer information
         /// </summary>
-        ConsoleBuffer Buffer = new ConsoleBuffer();
+        //ConsoleBuffer Buffer = new ConsoleBuffer();
         /// <summary>
         /// Token displayed when requesting input.
         /// </summary>
@@ -44,13 +45,15 @@ namespace CommandConsole
         /// <summary>
         /// Current command library.
         /// </summary>
-        public CommandRunner RunCommand { get; set; }
-        
         public MainWindow()
         {
             InitializeComponent();
-            Buffer.BufferUpdated = WriteBuffer;
-            RunCommand = new CommandRunner();
+            ConsoleBuffer.BufferUpdated = WriteBuffer;
+            //RunCommand = new CommandRunner();
+            CommandEngine commandengine = new CommandEngine(1);
+            TaskSystem.ActiveTask.Push(commandengine.TaskID);
+            TaskSystem.RunningTasks.Add(commandengine.TaskID, Task.Run(() => commandengine.Execute(this, null)));
+            TaskSystem.CommandQueue.Add(commandengine.TaskID, new Queue<string>());
 
             //setup ConsoleInput textbox.
             ConsoleInput.Text = InputToken;
@@ -65,7 +68,8 @@ namespace CommandConsole
             ConsoleOutput.TextChanged += (object sender, TextChangedEventArgs e) => ConsoleOutput.ScrollToEnd();
 
             //Launch text
-            Buffer.Write("COMMAND CONSOLE\n\nCreator: Allen Roberts\nemail: allen.roberts1985@gmail.com\ngit: github.com/arobert2\n");
+            ConsoleBuffer.WriteColor("COMMAND CONSOLE\n\nCreator: Allen Roberts\nemail: allen.roberts1985@gmail.com\ngit: github.com/arobert2\n", new SolidColorBrush(Colors.Blue));
+            ConsoleBuffer.Help("type listcommands to get started.");
         }
         /// <summary>
         /// Writes the test from the buffer.
@@ -73,8 +77,8 @@ namespace CommandConsole
         public void WriteBuffer()
         {
             TextRange tr = new TextRange(ConsoleOutput.Document.ContentEnd, ConsoleOutput.Document.ContentEnd);
-            tr.Text = Buffer.OutputBuffer[Buffer.OutputBuffer.Count - 1].Text + "\n";
-            tr.ApplyPropertyValue(TextElement.ForegroundProperty, Buffer.OutputBuffer[Buffer.OutputBuffer.Count - 1].DisplayColor);
+            tr.Text = ConsoleBuffer.OutputBuffer[ConsoleBuffer.OutputBuffer.Count - 1].Text + "\n";
+            tr.ApplyPropertyValue(TextElement.ForegroundProperty, ConsoleBuffer.OutputBuffer[ConsoleBuffer.OutputBuffer.Count - 1].DisplayColor);
         }
         /// <summary>
         /// Execute when enter is pressed.
@@ -82,7 +86,8 @@ namespace CommandConsole
         public void OnEnter()
         {
             string CommandString = ConsoleInput.Text.Substring(MinimumCaretPosition).ToLower();
-            RunCommand.RunCommand(CommandString);
+            //RunCommand.RunCommand(CommandString);
+            TaskSystem.EnterCommand(CommandString);
             ConsoleInput.Text = InputToken;
             ConsoleInput.CaretIndex = MinimumCaretPosition;
         }

@@ -7,14 +7,14 @@ using System.Windows.Media;
 
 namespace CommandConsole
 {
-    public class ConsoleBuffer
+    public static class ConsoleBuffer
     {
         /// <summary>
         /// Update console delegate
         /// </summary>
         public static Action _bufferupdated;
 
-        public Action BufferUpdated { get { return _bufferupdated; } set { _bufferupdated = value; } }
+        public static Action BufferUpdated { get { return _bufferupdated; } set { _bufferupdated = value; } }
         /// <summary>
         /// Output buffer
         /// </summary>
@@ -22,33 +22,29 @@ namespace CommandConsole
         /// <summary>
         /// Public output buffer. Used to invoke BufferUpdated when updated.
         /// </summary>
-        public List<StringData> OutputBuffer { get { return _obuffer; } private set { _obuffer = value; } }
-
-        public ConsoleBuffer()
-        {
-        }
+        public static List<StringData> OutputBuffer { get { return _obuffer; } private set { _obuffer = value; } }
 
         /// <summary>
         /// Write to OutputBuffer as an error
         /// </summary>
         /// <param name="t">text to write</param>
-        public void Error(string t)
+        public static void Error(string t)
         {
-            WriteColor("!!! " + t, new SolidColorBrush(Colors.DarkRed));
+            WriteColor("!!! " + t, new SolidColorBrush(Colors.Red));
         }
         /// <summary>
         /// Write to OutputBuffer as Help text
         /// </summary>
         /// <param name="t">Text to write</param>
-        public void Help(string t)
+        public static void Help(string t)
         {
-            WriteColor("??? " + t, new SolidColorBrush(Colors.Green));
+            WriteColor("??? " + t, new SolidColorBrush(Colors.Yellow));
         }
         /// <summary>
         /// Write to OutputBuffer as standard info.
         /// </summary>
         /// <param name="t">Text to write.</param>
-        public void Write(string t)
+        public static void Write(string t)
         {
             WriteColor(t, new SolidColorBrush(Colors.Black));
         }
@@ -57,7 +53,7 @@ namespace CommandConsole
         /// </summary>
         /// <param name="t">Text</param>
         /// <param name="b">Color</param>
-        public void WriteColor(string t, Brush b)
+        public static void WriteColor(string t, Brush b)
         {
             OutputBuffer.Add(new StringData(b, t));
             BufferUpdated?.Invoke();

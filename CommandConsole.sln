@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandConsole", "CommandConsole\CommandConsole.csproj", "{CF7D267E-C3D9-4011-A09C-91A971480205}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "multithread", "multithread\multithread.csproj", "{C0ACCCCA-BC46-4855-B1B8-2D7942979246}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{CF7D267E-C3D9-4011-A09C-91A971480205}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7D267E-C3D9-4011-A09C-91A971480205}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7D267E-C3D9-4011-A09C-91A971480205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0ACCCCA-BC46-4855-B1B8-2D7942979246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0ACCCCA-BC46-4855-B1B8-2D7942979246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0ACCCCA-BC46-4855-B1B8-2D7942979246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0ACCCCA-BC46-4855-B1B8-2D7942979246}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

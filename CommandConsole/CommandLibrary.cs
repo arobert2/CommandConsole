@@ -37,98 +37,6 @@ namespace CommandConsole
         public CommandLibrary()
         {
             Library = new Dictionary<string, ICommand>();
-            List<ICommand> c = new List<ICommand>();
-            c.Add(new Helpc());
-            c.Add(new ListCommands());
-            c.Add(new Exit());
-
-            foreach (ICommand com in c)
-                Library.Add(com.Keyword, com);
-        }
-        /// <summary>
-        /// List all commands available. Command formated to add to CommandLibrary.
-        /// </summary>
-        public class ListCommands : ICommand
-        {
-            /// <summary>
-            /// Help information
-            /// </summary>
-            public string Help => "Lists all available commands";
-            /// <summary>
-            /// keyword used for call
-            /// </summary>
-            public string Keyword => "listcommands";
-            /// <summary>
-            /// Command type. (Command or App. Apps run on their own thread.)
-            /// </summary>
-            public CommandType Type => CommandType.Command;
-            /// <summary>
-            /// Method that will be executed.
-            /// </summary>
-            /// <param name="o">generic parameter</param>
-            public void Execute(object o, string s)
-            {
-                ConsoleBuffer buffer = new ConsoleBuffer();
-                CommandRunner main = (CommandRunner)o;
-                CommandLibrary lib = main.CurrentLibrary;
-                foreach(ICommand c in lib.Library.Values)
-                {
-                    string gap = "                                          ";
-                    gap = gap.Substring(c.Keyword.Length);
-                    buffer.Write(c.Keyword + gap + c.Type.ToString());
-                }
-            }
-        }
-        /// <summary>
-        /// displays the help information.
-        /// </summary>
-        public class Helpc : ICommand
-        {
-            /// <summary>
-            /// Help information
-            /// </summary>
-            public string Help => "Get help info for all commands. (ex: help listcommands)";
-            /// <summary>
-            /// keyword used for call
-            /// </summary>
-            public string Keyword => "help";
-            /// <summary>
-            /// Type of command (Command or App. Apps run on their own threads.);
-            /// </summary>
-            public CommandType Type => CommandType.Command;
-            /// <summary>
-            /// Method that will be executed
-            /// </summary>
-            /// <param name="o">Command that will be help.</param>
-            public void Execute(object o, string c)
-            {
-                ConsoleBuffer buffer = new ConsoleBuffer();
-                if (c.Split().Length >= 2)
-                {
-                    CommandRunner main = (CommandRunner)o;
-                    CommandLibrary lib = main.CurrentLibrary;
-                    if (lib.Library.ContainsKey(c.Split()[1]))
-                    {
-                        buffer.Help(lib.Library[c.Split()[1]].Help);
-                        return;
-                    }
-                    buffer.Error("Help topic not found.");
-                    return;
-                }
-                buffer.Error("Not enough parameters.");
-            }
-        }
-
-        public class Exit : ICommand
-        {
-            public string Help => "Exit Command Console";
-            public string Keyword => "exit";
-            public CommandType Type => CommandType.Command;
-            public void Execute(object sender, string c)
-            {
-                Application.Current.Shutdown();
-                return;
-            }
         }
     }
     /// <summary>
@@ -161,13 +69,17 @@ namespace CommandConsole
     public interface IApp : ICommand
     {
         /// <summary>
+        /// Name of task.
+        /// </summary>
+        string Name { get; }
+        /// <summary>
+        /// Task ID number
+        /// </summary>
+        string TaskID { get; set; }
+        /// <summary>
         /// Sub commands for the application to function
         /// </summary>
         CommandLibrary SubCommands { get; }
-        /// <summary>
-        /// Command to cancel task.
-        /// </summary>
-        void Cancel();
         /// <summary>
         /// Log location.
         /// </summary>
@@ -176,6 +88,10 @@ namespace CommandConsole
         /// Current status.
         /// </summary>
         string Status { get; }
+        /// <summary>
+        /// Stops the application. Must be implemented in Execute.
+        /// </summary>
+        bool StopApp { get; set; }
     }
     /// <summary>
     /// defines whether a command runs in the current thread or a seperate thread.
