@@ -44,13 +44,13 @@ namespace CommandConsole
         /// <summary>
         /// Current command library.
         /// </summary>
-        public CommandLibrary CurrentLibrary { get; set; }
+        public CommandRunner RunCommand { get; set; }
         
         public MainWindow()
         {
             InitializeComponent();
             Buffer.BufferUpdated = WriteBuffer;
-            CurrentLibrary = TopLevelLibrary.Instance;
+            RunCommand = new CommandRunner();
 
             //setup ConsoleInput textbox.
             ConsoleInput.Text = InputToken;
@@ -82,14 +82,7 @@ namespace CommandConsole
         public void OnEnter()
         {
             string CommandString = ConsoleInput.Text.Substring(MinimumCaretPosition).ToLower();
-            if (CommandString.Length <= 0 || !CurrentLibrary.Library.ContainsKey(CommandString.Split()[0]))
-            {
-                Buffer.Error("Command not found.");
-            }
-            else
-            {
-                CurrentLibrary.Library[CommandString.Split()[0]].Execute(this, CommandString);
-            }
+            RunCommand.RunCommand(CommandString);
             ConsoleInput.Text = InputToken;
             ConsoleInput.CaretIndex = MinimumCaretPosition;
         }

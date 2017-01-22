@@ -69,13 +69,12 @@ namespace CommandConsole
             public void Execute(object o, string s)
             {
                 ConsoleBuffer buffer = new ConsoleBuffer();
-                MainWindow main = (MainWindow)o;
+                CommandRunner main = (CommandRunner)o;
                 CommandLibrary lib = main.CurrentLibrary;
                 foreach(ICommand c in lib.Library.Values)
                 {
                     string gap = "                                          ";
                     gap = gap.Substring(c.Keyword.Length);
-                    System.Diagnostics.Debug.WriteLine(gap.Length);
                     buffer.Write(c.Keyword + gap + c.Type.ToString());
                 }
             }
@@ -104,14 +103,19 @@ namespace CommandConsole
             public void Execute(object o, string c)
             {
                 ConsoleBuffer buffer = new ConsoleBuffer();
-                if (c.Split().Length < 2)
+                if (c.Split().Length >= 2)
                 {
-                    buffer.Error("Not enough parameters.");
+                    CommandRunner main = (CommandRunner)o;
+                    CommandLibrary lib = main.CurrentLibrary;
+                    if (lib.Library.ContainsKey(c.Split()[1]))
+                    {
+                        buffer.Help(lib.Library[c.Split()[1]].Help);
+                        return;
+                    }
+                    buffer.Error("Help topic not found.");
                     return;
                 }
-                MainWindow main = (MainWindow)o;
-                CommandLibrary lib = main.CurrentLibrary;
-                buffer.Help(lib.Library[c.Split()[1]].Help);
+                buffer.Error("Not enough parameters.");
             }
         }
 
