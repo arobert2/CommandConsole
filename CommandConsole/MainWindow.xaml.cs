@@ -49,7 +49,6 @@ namespace CommandConsole
         {
             InitializeComponent();
             ConsoleBuffer.BufferUpdated = WriteBuffer;
-            //RunCommand = new CommandRunner();
             CommandEngine commandengine = new CommandEngine(1);
             TaskSystem.ActiveTask.Push(commandengine.TaskID);
             TaskSystem.RunningTasks.Add(commandengine.TaskID, Task.Run(() => commandengine.Execute(this, null)));
