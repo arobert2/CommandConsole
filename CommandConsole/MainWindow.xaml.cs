@@ -29,25 +29,22 @@ namespace CommandConsole
         /// <summary>
         /// Token displayed when requesting input.
         /// </summary>
-        public static string InputToken => ">> ";
+        public static string InputToken => TaskSystem.WorkingDirectory;
         /// <summary>
         /// Minimum caret position
         /// </summary>
-        int MinimumCaretPosition => InputToken.Length;
+        int MinimumCaretPosition => TaskSystem.WorkingDirectory.Length;
         /// <summary>
         /// Current caret position
         /// </summary>
         int CaretPosition => ConsoleInput.CaretIndex;
-        /// <summary>
-        /// Top level CommandLibrary.
-        /// </summary>
-        private static TopLevelLibrary _lib = new TopLevelLibrary();
         /// <summary>
         /// Current command library.
         /// </summary>
         public MainWindow()
         {
             InitializeComponent();
+            LoadApps la = new LoadApps();
             ConsoleBuffer.BufferUpdated = WriteBuffer;
             CommandEngine commandengine = new CommandEngine(1);
             TaskSystem.ActiveTask.Push(commandengine.TaskID);

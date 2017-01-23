@@ -10,20 +10,24 @@ namespace CommandConsole
     /// <summary>
     /// Singleton instance of CommandLibrary to serve as the top level library
     /// </summary>
-    public class TopLevelLibrary
+    public partial class LoadApps
     {
         /// <summary>
         /// Top level library
         /// </summary>
-        public static CommandLibrary Instance { get; set; }
+        public static CommandLibrary AppsToLoad{ get; set; }
         /// <summary>
         /// Initialize library.
         /// </summary>
-        public TopLevelLibrary()
+        public LoadApps()
         {
-            Instance = Instance == null ? new CommandLibrary() : Instance;
+            AppsToLoad = AppsToLoad == null ? new CommandLibrary() : AppsToLoad;
+            LoadLibrary();
         }
+
+        partial void LoadLibrary();
     }
+
     /// <summary>
     /// Command Library
     /// </summary>
