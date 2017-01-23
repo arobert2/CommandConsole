@@ -55,9 +55,9 @@ namespace CommandConsole
         /// <summary>
         /// Method to execute
         /// </summary>
-        /// <param name="Param">Parameters</param>
+        /// <param name="sender">Parameters</param>
         /// <param name="input">complete input string</param>
-        void Execute(object Param, string input);
+        void Execute(object sender, string input);
         /// <summary>
         /// Type of command.
         /// </summary>
