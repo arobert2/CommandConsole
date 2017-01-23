@@ -10,6 +10,10 @@ namespace CommandConsole
     public static class TaskSystem
     {
         /// <summary>
+        /// Input token.
+        /// </summary>
+        public static string WorkingDirectory { get; set; } = ">> ";
+        /// <summary>
         /// Task currently being manipulated.
         /// </summary>
         public static Stack<string> ActiveTask { get; set; } = new Stack<string>();

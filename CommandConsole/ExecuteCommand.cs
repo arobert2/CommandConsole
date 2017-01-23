@@ -65,8 +65,9 @@ namespace CommandConsole
             newcommands.Add(new Helpc());
             newcommands.Add(new ListCommands());
             newcommands.Add(new ListTasks());
+            newcommands.Add(new EnterTask());
             newcommands.Add(new PrintInfo());
-            newcommands.Add(new Exit());      
+            newcommands.Add(new Exit());
 
             foreach (ICommand ic in newcommands)
                 SubCommands.Library.Add(ic.Keyword, ic);
@@ -276,7 +277,55 @@ namespace CommandConsole
                 Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Help(helpcom.Help));
             }
         }
+        /// <summary>
+        /// Enters a task to input commands
+        /// </summary>
+        private class EnterTask : ICommand
+        {
+            /// <summary>
+            /// command keyword
+            /// </summary>
+            public string Keyword => "enter";
+            /// <summary>
+            /// Help text
+            /// </summary>
+            public string Help => "Enters an Application to interact directly.";
+            /// <summary>
+            /// Type of command
+            /// </summary>
+            public CommandType Type => CommandType.Command;
+            /// <summary>
+            /// Method to execute. 
+            /// </summary>
+            /// <param name="sender">parent app</param>
+            /// <param name="c">command input string</param>
+            public void Execute(object sender, string c)
+            {
+                string[] commands = c.Split();
 
+                if(commands.Length < 2)
+                {
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error("Not enough parameters."));
+                    return;
+                }
+
+                if (!TaskSystem.RunningTasks.ContainsKey(commands[1]))
+                {
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error("Task " + commands[1] + " does not exist."));
+                    return;
+                }
+
+                if (TaskSystem.ActiveTask.Peek() == commands[1])
+                {
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write("Task " + commands[1] + " already active."));
+                    return;
+                }
+
+                TaskSystem.ActiveTask.Push(commands[1]);
+                TaskSystem.WorkingDirectory = commands[1] + TaskSystem.WorkingDirectory;
+                Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write("Task " + commands[1] + " is active."));
+            }
+        }
         #endregion
     }
 }
