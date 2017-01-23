@@ -127,9 +127,9 @@ namespace CommandConsole
         {
             _id++;
             App.TaskID = _id.ToString("X");
+            TaskSystem.CommandQueue.Add(App.TaskID, new Queue<string>());
             Task newTask = Task.Run(() => App.Execute(this, c));
             TaskSystem.RunningTasks.Add(App.TaskID, newTask);
-            TaskSystem.CommandQueue.Add(App.TaskID, new Queue<string>());     
         }
 
         public void Log() { }
