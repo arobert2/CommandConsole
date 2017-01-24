@@ -118,8 +118,8 @@ The following should be overridden:
 public string Name { get; }
 public string Help { get; }
 public string Keyword { get; }
-public void Execute()
-public void Log()
+public void Execute();
+public void Log();
 ```
 #####Loading My New Commands#####
 
