@@ -48,8 +48,8 @@ CommandType Type => CommandType.Command;
 void Execute(object sender, string input)
 ```
 This is the method that will be executed whether this is an ICommand or an IApp. All calls to methods added will come from here.
-```C# object sender``` is expected to be the parent application that this ICommand is defined in.
-```C# string input``` is expected to be the raw command input from the CommandConsole interface.
+```object sender``` is expected to be the parent application that this ICommand is defined in.
+```string input``` is expected to be the raw command input from the CommandConsole interface.
 
 #####Creating an IApp#####
 
@@ -98,3 +98,35 @@ public void Execute(object sender, string c)
 ```
 
 #####Using CommandEngine as a template#####
+
+You can derive from the stop level IApp CommandEngine in order to gain access to existing useful commands in your new IApp.
+
+The commands that are inherited are:
+help -  prints the help text for the current IApp you are interacting with.
+
+listcommands - lists all available commands that the current IApp you are interacting with has in his SubCommands CommandLibrary.
+
+printinfo - prints the TaskID and Name of the current active IApp (The CommandEngine's listtasks command inserts this command into each 
+application command queue).
+
+exit - shuts down the current IApp you are interacting with and returns you to the CommandEngine.
+
+In order to create your own IApp you'll need to override several required fields and methods defined in CommandEngine.
+
+The following should be overridden:
+```C#
+public string Name { get; }
+public string Help { get; }
+public string Keyword { get; }
+public void Execute()
+public void Log()
+```
+#####Loading My New Commands#####
+
+Once you have completed your IApp, you will need to add it to the top level CommandLibrary which is CommandEngine's 
+SubCommands CommandLibrary. To do this there is a singleton partial class implementation of the CommandLibrary called LoadApps which 
+includes a partial method called LoadLibrary(). Create a new partial class LoadApps and within it create a new partial method void LoadLibrary().
+Within LoadLibrary add your command with the following syntax ```AppsToLoad.Library.Add(keyword, new Application());``` where keyword is a string
+of the keyword used to call it and new Application() is a new instantiation of your IApp.
+
+Now compile and try calling your new IApp.
