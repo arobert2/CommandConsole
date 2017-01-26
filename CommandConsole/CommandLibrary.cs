@@ -95,6 +95,11 @@ namespace CommandConsole
         /// Stops the application. Must be implemented in Execute.
         /// </summary>
         bool StopApp { get; set; }
+        /// <summary>
+        /// Returns a copy of this with an updated TaskID
+        /// </summary>
+        /// <returns>new IApp</returns>
+        IApp Clone();
     }
     /// <summary>
     /// defines whether a command runs in the current thread or a seperate thread.

@@ -67,9 +67,12 @@ namespace CommandConsole.ComApps
         /// <param name="c">input string that triggered the task.</param>
         private void StartApp(IApp App, string c)
         {
-            TaskSystem.CommandQueue.Add(App.TaskID, new Queue<string>());
-            Task newTask = Task.Run(() => App.Execute(this, c));
-            TaskSystem.RunningTasks.Add(App.TaskID, newTask);
+            string[] comms = c.Split();
+            IApp clone = (IApp)SubCommands.Library[comms[0]];
+            clone = clone.Clone();
+            TaskSystem.CommandQueue.Add(clone.TaskID, new Queue<string>());
+            Task newTask = Task.Run(() => clone.Execute(this, c));
+            TaskSystem.RunningTasks.Add(clone.TaskID, newTask);
         }
 
         public override IApp Clone()
@@ -151,9 +154,12 @@ namespace CommandConsole.ComApps
                     return;
                 }
 
-                TaskSystem.ActiveTask.Push(commands[1]);
-                TaskSystem.WorkingDirectory = commands[1] + TaskSystem.WorkingDirectory;
-                Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write("Task " + commands[1] + " is active."));
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    TaskSystem.ActiveTask.Push(commands[1]);
+                    TaskSystem.WorkingDirectory = commands[1] + TaskSystem.WorkingDirectory;
+                    ConsoleBuffer.Write("Task " + commands[1] + " is active.");
+                });
             }
         }
         #endregion

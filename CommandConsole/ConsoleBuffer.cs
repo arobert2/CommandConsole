@@ -59,6 +59,10 @@ namespace CommandConsole
             BufferUpdated?.Invoke();
         }
         /// <summary>
+        /// Set the clear method in the MainWindow.xaml.cs
+        /// </summary>
+        public static Action Clear;
+        /// <summary>
         /// Holds string data
         /// </summary>
         public struct StringData

@@ -49,6 +49,7 @@ namespace CommandConsole.ComApps
             newcommands.Add(new ListCommands());
             newcommands.Add(new PrintInfo());
             newcommands.Add(new Exit());
+            newcommands.Add(new ClearConsole());
 
             foreach (ICommand ic in newcommands)
                 SubCommands.Library.Add(ic.Keyword, ic);
@@ -88,7 +89,7 @@ namespace CommandConsole.ComApps
             /// <summary>
             /// keyword to run.
             /// </summary>
-            public string Keyword => "exit";
+            public string Keyword => "close";
             /// <summary>
             /// Help data for this command
             /// </summary>
@@ -197,6 +198,17 @@ namespace CommandConsole.ComApps
 
                 ICommand helpcom = parentapp.SubCommands.Library[queue[1]];
                 Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Help(helpcom.Help));
+            }
+        }
+
+        public class ClearConsole : ICommand
+        {
+            public string Keyword => "clear";
+            public string Help => "Clears the screen";
+            public CommandType Type => CommandType.Command;
+            public void Execute(object sender, string c)
+            {
+                Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Clear());
             }
         }
         #endregion

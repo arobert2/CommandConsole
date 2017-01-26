@@ -18,12 +18,23 @@ namespace CommandConsole.ComApps
 
         public SimpleWebServer()
         {
-            SubCommands.Library.Add("leave", new Leave());
+            SubCommands.Library.Add("exit", new Leave());
         }
 
         public override void Execute(object sender, string c)
         {
-
+            while(!StopApp)
+            {
+                string newinstruction = CheckForInstruction();
+                string[] queue = newinstruction?.Split();
+                if (queue != null)
+                {
+                    if (SubCommands.Library.ContainsKey(queue[0]) && SubCommands.Library[queue[0]].Type == CommandType.Command)
+                        SubCommands.Library[queue[0]].Execute(this, newinstruction);         
+                    else
+                        Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error("Command " + queue[0] + " not found!"));
+                }
+            }
         }
 
         public override IApp Clone()
@@ -50,7 +61,7 @@ namespace CommandConsole.ComApps
 
         public class Leave : ICommand
         {
-            public string Keyword => "leave";
+            public string Keyword => "exit";
             public string Help => "Leaves the current interfaced application back to the CommandEngine application.";
             public CommandType Type => CommandType.Command;
             public void Execute(object sender, string c)

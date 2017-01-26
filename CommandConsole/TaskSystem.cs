@@ -12,7 +12,9 @@ namespace CommandConsole
         /// <summary>
         /// Input token.
         /// </summary>
-        public static string WorkingDirectory { get; set; } = ">> ";
+        public static string WorkingDirectory { get { return _wd; } set { _wd = value; EnterSubCommand?.Invoke(); } }
+        public static Action EnterSubCommand;
+        private static string _wd = ">> ";
         /// <summary>
         /// Task currently being manipulated.
         /// </summary>
