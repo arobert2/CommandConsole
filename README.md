@@ -63,7 +63,7 @@ This is a display name used to help the user interact with the tasks.
 ```C#
 string TaskID { get; set; }
 ```
-This is the unique TaskID set for each task. CommandEngine always has a TaskID of 1.
+This is the unique TaskID set for each task. It is increased by one everytime an object that implements AppTemplate is created.
 
 ```C#
 CommandLibrary SubCommands { get; set; }
