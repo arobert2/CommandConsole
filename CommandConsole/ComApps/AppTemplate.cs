@@ -10,7 +10,7 @@ namespace CommandConsole.ComApps
     public abstract class AppTemplate : IApp
     {
         private static int _id = 0;
-        public virtual string Name { get; }
+        public virtual string Name { get; protected set; }
         /// <summary>
         /// ID of task
         /// </summary>
@@ -213,6 +213,40 @@ namespace CommandConsole.ComApps
             public void Execute(object sender, string c)
             {
                 Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Clear());
+            }
+        }
+
+        public class Rename : ICommand
+        {
+            public string Keyword => "name";
+            public string Help => "Changes the default name of the application for better tracking.";
+            public CommandType Type => CommandType.Command;
+            public void Execute(object sender, string c)
+            {
+                AppTemplate parent = (AppTemplate)sender;
+                string[] split = c.Split();
+
+                if(split.Length < 1)
+                {
+                    parent.Status = "name: Not enough parameters.";
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error(parent.Status));
+                }
+
+                bool quoted = split[1].StartsWith("\"") && c.IndexOf("\"") != c.LastIndexOf("\"");
+                if(!quoted)
+                {
+                    parent.Name = split[1];
+                    parent.Status = "name: App renamed to: " + parent.Name;
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write(parent.Status));
+                    return;
+                }
+                else
+                {
+                    parent.Name = c.Substring(c.IndexOf("\""), c.LastIndexOf("\""));
+                    parent.Status = "name: App renamed to: " + parent.Name;
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write(parent.Status));
+                    return;
+                }                    
             }
         }
         #endregion

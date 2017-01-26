@@ -16,6 +16,9 @@ namespace CommandConsole.ComApps
         private string stat;
         public override string Status { get { return stat; } set { stat = value;  Log(stat); } }
 
+        protected List<string> Routing { get; set; } = new List<string>();
+        protected int ListeningPort { get; set; }
+
         public SimpleWebServer()
         {
             SubCommands.Library.Add("exit", new Leave());
@@ -75,5 +78,33 @@ namespace CommandConsole.ComApps
             }
         }
 
+        public class setport : ICommand
+        {
+            public string Keyword => "setport";
+            public string Help => "Set the port number to listen on.";
+            public CommandType Type => CommandType.Command;
+            public void Execute(object sender, string c)
+            {
+                string[] comms = c.Split();
+                SimpleWebServer parent = (SimpleWebServer)sender;
+                if(comms.Length < 1)
+                {
+                    parent.Status = "setport: No port number supplied.";
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error(parent.Status));
+                    return;
+                }
+
+                int parse = -1;
+                int.TryParse(comms[1], out parse);
+                parent.ListeningPort = parse;
+
+                if(parse < 0)
+                {
+                    parent.Status = "setport: No port number supplied.";
+                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error(parent.Status));
+                    return;
+                }
+            }
+        }
     }
 }
