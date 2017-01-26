@@ -15,8 +15,8 @@ To use the console simply compile and run. To get started type listcommands.
 
 All commands in the CommandConsole are classes derived from either ICommand or IApp, which IApp is derived from ICommand.
 ICommand objects run in the thread their parent IApp object is running in while IApp objects run in their own thread.
-Commands are passed to a queue specific to each task (TaskSystem.CommandQueue) and Applications monitor thier specific queue
-to determine if a new instruction has been passed to it.
+Commands are passed to a queue specific to each task ```TaskSystem.CommandQueue``` and Applications check thier specific queue
+each loop to determine if a new instruction has been passed to it.
 
 ####Creating an ICommand####
 
@@ -95,6 +95,12 @@ public void Execute(object sender, string c)
 	}
 }
 ```
+
+```C#
+IApp Clone();
+```
+Returns a copy of this IApp except it has an updated TaskID. Used for launching classes.
+
 
 ####Creating an Application from AppTemplate.####
 This is the recommended way of building an application.
