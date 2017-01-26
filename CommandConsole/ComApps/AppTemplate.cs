@@ -105,8 +105,12 @@ namespace CommandConsole.ComApps
             /// <param name="c">input commandline.</param>
             public void Execute(object sender, string c)
             {
-                ((CommandEngine)sender).StopApp = true;
-                Application.Current.Dispatcher.Invoke(() => TaskSystem.ActiveTask.Pop());
+                ((IApp)sender).StopApp = true;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    TaskSystem.ActiveTask.Pop();
+                    TaskSystem.WorkingDirectory = ">> ";
+                });
             }
         }
         /// <summary>
