@@ -1,4 +1,5 @@
 using System;
+using CommandConsole.ComApps;
 
 namespace CommandConsole
 {

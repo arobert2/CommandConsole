@@ -24,7 +24,6 @@ namespace CommandConsole
             AppsToLoad = AppsToLoad == null ? new CommandLibrary() : AppsToLoad;
             LoadLibrary();
         }
-
         partial void LoadLibrary();
     }
 
@@ -87,7 +86,7 @@ namespace CommandConsole
         /// <summary>
         /// Log location.
         /// </summary>
-        void Log();
+        void Log(string stat);
         /// <summary>
         /// Current status.
         /// </summary>

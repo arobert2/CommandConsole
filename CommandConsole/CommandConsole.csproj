@@ -55,8 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Applications\ExecuteCommand.cs" />
-    <Compile Include="Applications\SimpleWebServer.cs" />
+    <Compile Include="ComApps\AppTemplate.cs" />
+    <Compile Include="ComApps\ExecuteCommand.cs" />
+    <Compile Include="ComApps\SimpleWebServer.cs" />
     <Compile Include="LoadApps.cs" />
     <Compile Include="TaskSystem.cs" />
     <Page Include="MainWindow.xaml">
