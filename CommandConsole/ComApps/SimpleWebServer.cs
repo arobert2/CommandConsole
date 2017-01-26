@@ -10,20 +10,15 @@ namespace CommandConsole.ComApps
 {
     class SimpleWebServer : AppTemplate
     {
-        public override string Name => "Simple Web Server";
         public override string Keyword => "simplewebserver";
         public override string Help => "A simple web server. use listcommands for Application commands.";
-        private string stat;
-        public override string Status { get { return stat; } set { stat = value;  Log(stat); } }
-
         protected List<string> Routing { get; set; } = new List<string>();
         protected int ListeningPort { get; set; }
-
         public SimpleWebServer()
         {
+            Name = "Simple Web Server";
             SubCommands.Library.Add("exit", new Leave());
         }
-
         public override void Execute(object sender, string c)
         {
             while(!StopApp)
@@ -39,7 +34,6 @@ namespace CommandConsole.ComApps
                 }
             }
         }
-
         public override IApp Clone()
         {
             return new SimpleWebServer();
@@ -47,21 +41,20 @@ namespace CommandConsole.ComApps
 
         public override void Log(string output)
         {
-            string d = "SimpleWebServer";
+            string d = "SimpleWebServer" + TaskID;
             string f = "App.log";
 
             if (!Directory.Exists(d))
-                Directory.CreateDirectory("SimpleWebServer");
+                Directory.CreateDirectory(d);
 
             if (!File.Exists(d + @"\" + f))
                 File.Create(f);
 
-            using (StreamWriter sr = new StreamWriter(d + @"\" + f))
+            using (StreamWriter sr = File.AppendText(d + @"\" + f))
             {
                 sr.WriteLine(Status);
             }
         }
-
         public class Leave : ICommand
         {
             public string Keyword => "exit";
@@ -77,7 +70,6 @@ namespace CommandConsole.ComApps
                 });
             }
         }
-
         public class setport : ICommand
         {
             public string Keyword => "setport";

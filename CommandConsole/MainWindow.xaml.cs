@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using CommandConsole.ComApps;
 
 namespace CommandConsole
 {
@@ -44,12 +45,20 @@ namespace CommandConsole
         public MainWindow()
         {
             InitializeComponent();
+            Cursor newCursor = new Cursor(new MemoryStream(Properties.Resources.CustomIBeam));
+            ConsoleInput.Cursor = newCursor;
+            ConsoleOutput.Cursor = newCursor;
             LoadApps la = new LoadApps();
             ConsoleBuffer.BufferUpdated = WriteBuffer;
-            CommandEngine commandengine = new CommandEngine(1);
+            ConsoleBuffer.Clear = () => { ConsoleOutput.Document.Blocks.Clear(); ConsoleOutput.AppendText(Environment.NewLine); };
+            CommandEngine commandengine = new CommandEngine();
+            foreach (ICommand ic in LoadApps.AppsToLoad.Library.Values)
+                commandengine.SubCommands.Library.Add(ic.Keyword, ic);
+
             TaskSystem.ActiveTask.Push(commandengine.TaskID);
             TaskSystem.RunningTasks.Add(commandengine.TaskID, Task.Run(() => commandengine.Execute(this, null)));
             TaskSystem.CommandQueue.Add(commandengine.TaskID, new Queue<string>());
+            TaskSystem.EnterSubCommand = () => ResetInput();
 
             //setup ConsoleInput textbox.
             ConsoleInput.Text = InputToken;
@@ -81,9 +90,13 @@ namespace CommandConsole
         /// </summary>
         public void OnEnter()
         {
-            string CommandString = ConsoleInput.Text.Substring(MinimumCaretPosition).ToLower();
-            //RunCommand.RunCommand(CommandString);
+            string CommandString = ConsoleInput.Text.Substring(MinimumCaretPosition);
             TaskSystem.EnterCommand(CommandString);
+            ResetInput();
+        }
+
+        public void ResetInput()
+        {
             ConsoleInput.Text = InputToken;
             ConsoleInput.CaretIndex = MinimumCaretPosition;
         }

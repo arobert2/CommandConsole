@@ -38,7 +38,8 @@ namespace CommandConsole.ComApps
         /// <summary>
         /// Current status of command
         /// </summary>
-        public virtual string Status { get; set; }
+        public virtual string Status { get { return stat; } protected set { stat = value; Log(stat); } }
+        protected string stat;
 
         public AppTemplate()
         {
@@ -50,6 +51,7 @@ namespace CommandConsole.ComApps
             newcommands.Add(new PrintInfo());
             newcommands.Add(new Exit());
             newcommands.Add(new ClearConsole());
+            newcommands.Add(new Rename());
 
             foreach (ICommand ic in newcommands)
                 SubCommands.Library.Add(ic.Keyword, ic);
@@ -226,27 +228,20 @@ namespace CommandConsole.ComApps
                 AppTemplate parent = (AppTemplate)sender;
                 string[] split = c.Split();
 
-                if(split.Length < 1)
+                if (split.Length < 1)
                 {
                     parent.Status = "name: Not enough parameters.";
                     Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Error(parent.Status));
                 }
 
                 bool quoted = split[1].StartsWith("\"") && c.IndexOf("\"") != c.LastIndexOf("\"");
-                if(!quoted)
+                if(quoted)
                 {
-                    parent.Name = split[1];
-                    parent.Status = "name: App renamed to: " + parent.Name;
-                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write(parent.Status));
-                    return;
+                    split = c.Split('"');
                 }
-                else
-                {
-                    parent.Name = c.Substring(c.IndexOf("\""), c.LastIndexOf("\""));
-                    parent.Status = "name: App renamed to: " + parent.Name;
-                    Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write(parent.Status));
-                    return;
-                }                    
+                parent.Name = split[1];
+                parent.Status = "name: App renamed to: " + parent.Name;
+                Application.Current.Dispatcher.Invoke(() => ConsoleBuffer.Write(parent.Status));
             }
         }
         #endregion

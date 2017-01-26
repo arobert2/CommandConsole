@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Threading;
 
 namespace CommandConsole.ComApps
 {
@@ -82,7 +83,7 @@ namespace CommandConsole.ComApps
 
         public override void Log(string stat)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
         #region subcommands.
         /// <summary>
